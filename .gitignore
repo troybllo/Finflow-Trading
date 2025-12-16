@@ -1,0 +1,245 @@
+# ============================================
+# SECURITY & PRIVACY - Credentials & Secrets
+# ============================================
+# Environment variables and secrets
+.env
+.env.*
+!.env.example
+*.key
+*.pem
+*.p12
+*.pfx
+*.crt
+*.cer
+*.der
+*.csr
+*.keystore
+*.jks
+secrets/
+credentials/
+*.secret
+*.secrets
+
+# API Keys and tokens
+**/api-keys/
+**/tokens/
+.apikeys
+.credentials
+
+# SSL/TLS certificates
+ssl/
+certs/
+
+# Authentication files
+auth.json
+firebase-credentials.json
+service-account*.json
+gcp-key*.json
+aws-credentials
+.aws/
+.gcp/
+
+# Database credentials
+database.yml
+database.ini
+db-config.json
+
+# ============================================
+# Python
+# ============================================
+# Virtual environments
+venv/
+env/
+ENV/
+.venv/
+.pyenv/
+
+# Python cache and bytecode
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+*.egg-info/
+dist/
+build/
+*.egg
+
+# Pyre type checker
+.pyre/
+.pyre_configuration
+
+# Testing and coverage
+.pytest_cache/
+.coverage
+htmlcov/
+.tox/
+
+# ============================================
+# Node.js / TypeScript
+# ============================================
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.npm
+.yarn/
+package-lock.json
+yarn.lock
+
+# Build outputs
+dist/
+build/
+.next/
+out/
+
+# ============================================
+# Go
+# ============================================
+# Binaries
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+bin/
+
+# Test binary
+*.test
+
+# Output of the go coverage tool
+*.out
+
+# Go workspace
+go.work
+go.work.sum
+
+# ============================================
+# Java / Maven
+# ============================================
+target/
+*.class
+*.jar
+*.war
+*.ear
+.m2/
+.classpath
+.project
+.settings/
+
+# ============================================
+# C++ / CMake
+# ============================================
+# CMake build directories
+build/
+cmake-build-*/
+CMakeFiles/
+CMakeCache.txt
+*.cmake
+!CMakeLists.txt
+
+# C++ compiled objects
+*.o
+*.obj
+*.out
+*.exe
+*.app
+*.i*86
+*.x86_64
+*.hex
+
+# ============================================
+# Docker & Containers
+# ============================================
+# Docker override files (for local development)
+docker-compose.override.yml
+.docker/
+
+# ============================================
+# Terraform
+# ============================================
+# State files (contain sensitive data)
+*.tfstate
+*.tfstate.*
+*.tfstate.backup
+
+# Terraform variables with secrets
+terraform.tfvars
+*.auto.tfvars
+.terraform/
+.terraform.lock.hcl
+
+# Crash log files
+crash.log
+crash.*.log
+
+# ============================================
+# IDEs & Editors
+# ============================================
+# VSCode
+.vscode/
+*.code-workspace
+
+# JetBrains IDEs
+.idea/
+*.iml
+*.iws
+
+# Vim
+*.swp
+*.swo
+*~
+
+# Emacs
+*~
+\#*\#
+.\#*
+
+# Sublime Text
+*.sublime-project
+*.sublime-workspace
+
+# ============================================
+# Operating System
+# ============================================
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# Linux
+.directory
+.Trash-*
+
+# ============================================
+# Logs & Temporary Files
+# ============================================
+*.log
+logs/
+*.tmp
+*.temp
+tmp/
+temp/
+
+# ============================================
+# Testing & Coverage
+# ============================================
+coverage/
+*.coverprofile
+.nyc_output/
+test-results/
+
+# ============================================
+# Backups
+# ============================================
+*.bak
+*.backup
+*.old
+*.orig
