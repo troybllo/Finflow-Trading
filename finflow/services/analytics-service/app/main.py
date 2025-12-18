@@ -18,8 +18,10 @@ async def lifespan(app: FastAPI):
     """Application lifespan events - startup and shutdown."""
     # Startup: Initialize connections, load models, etc.
     print(" Analytics Service starting up...")
-    # TODO: Initialize vector store connection
+    # TODO: Initialize vector store connections
+    app.state.vector_store = None
     # TODO: Load embedding models
+    app.state.embedding_model = None
     yield
     # Shutdown: Cleanup resources
     print("👋 Analytics Service shutting down...")
@@ -53,4 +55,5 @@ async def root():
         "service": "FinFlow Analytics",
         "version": "0.1.0",
         "status": "running",
+        "message": "Welcome to the FinFlow Analytics Service!",
     }

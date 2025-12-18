@@ -8,7 +8,7 @@ This module will grow to include:
 """
 
 from fastapi import APIRouter, HTTPException
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 from datetime import datetime
 from typing import Optional
 
@@ -23,8 +23,8 @@ router = APIRouter(prefix="/analytics")
 class MarketQueryRequest(BaseModel):
     """Request model for market analysis queries."""
 
-    query: str
-    symbols: Optional[list[str]] = None
+    query: str = Field(min_length=3, max_length=500)
+    symbols: Optional[list[str]] = Field(default=None, max_length=10)
     timeframe: Optional[str] = "1d"  # 1h, 1d, 1w, 1m
 
 
@@ -84,9 +84,16 @@ async def query_market(request: MarketQueryRequest):
     """
     # TODO: Implement RAG pipeline
     # 1. Embed the query
+    if len(request.query) < 3:
+        raise HTTPException(status_code=400, detail="Query too short")
+    else:
+        query_embedding = None  # Placeholder for embedding logic
     # 2. Search vector store for relevant documents
+    results = []
     # 3. Build context from retrieved documents
+    context = ""
     # 4. Generate response with LLM
+    prompt = f"Using the following context, answer the query: {request.query}\nContext: {context}"
 
     # Placeholder response
     return MarketQueryResponse(
@@ -157,3 +164,13 @@ async def get_symbol_analysis(symbol: str):
         "summary": f"Analysis for {symbol} not yet implemented",
         "last_updated": datetime.utcnow(),
     }
+
+
+@router.get("/trending")
+async def get_trending_symbols(symbol: str):
+    """
+    Get currently trending symbols based on market activity and news.
+    Returns a list of symbols with brief analysis.
+    """
+
+    return {"symbols": [], "updated_at": datetime.utcnow()}
