@@ -42,3 +42,12 @@ func ReadinessCheck(c *gin.Context) {
 		Dependencies: dependencies,
 	})
 }
+
+func (h *HealthHandler) Health(c *gin.Context) {
+}
+
+func (h *HealthHandler) Ready(c *gin.Context) {
+}
+
+func (h *HealthHandler) Ping(c *gin.Context) {
+}

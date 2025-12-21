@@ -19,20 +19,17 @@ func Logger() gin.HandlerFunc {
 		// Process request
 		c.Next()
 
-		// Calculate latency
-		latency := time.Since(start)
-
-		// Get status code
+		duration := time.Since(start)
 		statusCode := c.Writer.Status()
 
 		respSize := c.Writer.Size()
 
-		// Log format: [STATUS] METHOD PATH | LATENCY | IP
+		// Log format: [STATUS] METHOD PATH | DURATION | IP
 		log.Printf("[%d] %s %s | %v | %s",
 			statusCode,
 			c.Request.Method,
 			path,
-			latency,
+			duration,
 			c.ClientIP(),
 		)
 

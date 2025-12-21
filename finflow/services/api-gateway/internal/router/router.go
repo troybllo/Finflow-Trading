@@ -24,7 +24,18 @@ func Setup(cfg *config.Config) *gin.Engine {
 
 	// Initialize handlers
 	healthHandler := handlers.NewHealthHandler(cfg)
-	proxyHandler := handlers.NewProxyHandler(cfg)
+	proxyHandler := handlers.NewProxyHandler()
+
+	// Register backend services with proxy
+	if err := proxyHandler.AddService("analytics", cfg.AnalyticsServiceURL); err != nil {
+		panic("Failed to add analytics service: " + err.Error())
+	}
+	if err := proxyHandler.AddService("trading", cfg.TradingServiceURL); err != nil {
+		panic("Failed to add trading service: " + err.Error())
+	}
+	if err := proxyHandler.AddService("portfolio", cfg.PortfolioServiceURL); err != nil {
+		panic("Failed to add portfolio service: " + err.Error())
+	}
 
 	// Health check endpoints (no authentication required)
 	r.GET("/health", healthHandler.Health)
@@ -51,19 +62,19 @@ func Setup(cfg *config.Config) *gin.Engine {
 		// Analytics service routes
 		analytics := api.Group("/analytics")
 		{
-			analytics.Any("/*proxy", proxyHandler.ProxyToAnalytics)
+			analytics.Any("/*proxy", proxyHandler.ProxyToAnalytics())
 		}
 
-		// Trading engine routes (to be implemented)
+		// Trading engine routes
 		trading := api.Group("/trading")
 		{
-			trading.Any("/*proxy", proxyHandler.ProxyToTrading)
+			trading.Any("/*proxy", proxyHandler.ProxyToTrading())
 		}
 
-		// Portfolio service routes (to be implemented)
+		// Portfolio service routes
 		portfolio := api.Group("/portfolio")
 		{
-			portfolio.Any("/*proxy", proxyHandler.ProxyToPortfolio)
+			portfolio.Any("/*proxy", proxyHandler.ProxyToPortfolio())
 		}
 	}
 
