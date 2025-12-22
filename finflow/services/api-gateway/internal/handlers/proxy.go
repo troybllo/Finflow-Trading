@@ -53,7 +53,6 @@ func (p *ProxyHandler) ProxyToService(serviceName string) gin.HandlerFunc {
 			return
 		}
 
-		// Get the path after the proxy prefix
 		// For /api/v1/analytics/health, the "proxy" param contains "/health"
 		proxyPath := c.Param("proxy")
 
