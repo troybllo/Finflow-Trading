@@ -21,32 +21,31 @@ import jakarta.validation.Valid;
 @RestController
 @RequestMapping("/api/portfolio/")
 public class PortfolioController {
-	private final PortfolioService portfolioService;
+  private final PortfolioService portfolioService;
 
-	public PortfolioController(PortfolioService portfolioService) {
-		this.portfolioService = portfolioService;
-	}
+  public PortfolioController(PortfolioService portfolioService) {
+    this.portfolioService = portfolioService;
+  }
 
-	@GetMapping("{userId}")
-	public ResponseEntity<PortfolioResponse> getUserPortfolio(@PathVariable String userId) {
-		PortfolioResponse portfolio = portfolioService.getUserPortfolio(userId);
+  @GetMapping("{userId}")
+  public ResponseEntity<PortfolioResponse> getUserPortfolio(@PathVariable String userId) {
+    PortfolioResponse portfolio = portfolioService.getUserPortfolio(userId);
 
-		return ResponseEntity.ok(portfolio);
-	}
+    return ResponseEntity.ok(portfolio);
+  }
 
-	@PostMapping("{userId}/holdings")
-	public ResponseEntity<HoldingResponse> addUserHolding(@PathVariable String userId, @Valid @RequestBody HoldingRequest request) {
-		HoldingResponse holding = portfolioService.addUserHolding(userId, request);
+  @PostMapping("{userId}/holdings")
+  public ResponseEntity<HoldingResponse> addUserHolding(@PathVariable String userId,
+      @Valid @RequestBody HoldingRequest request) {
+    HoldingResponse holding = portfolioService.addUserHolding(userId, request);
 
-		return ResponseEntity.status(HttpStatus.CREATED).body(holding);
-	}
+    return ResponseEntity.status(HttpStatus.CREATED).body(holding);
+  }
 
-	@GetMapping("{userId}/holdings")
+  @GetMapping("{userId}/holdings")
 	public ResponseEntity<List<HoldingResponse>> listUserHoldings(@PathVariable String userId)   {
   	List<HoldingResponse> holdings = portfolioService.listUserHoldings(userId);
 
-		return ResponseEntity.ok(holdings);
-   }
-	}
+		return
 
 
