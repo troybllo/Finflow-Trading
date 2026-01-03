@@ -46,6 +46,5 @@ public class PortfolioController {
 	public ResponseEntity<List<HoldingResponse>> listUserHoldings(@PathVariable String userId)   {
   	List<HoldingResponse> holdings = portfolioService.listUserHoldings(userId);
 
-		return
-
-
+		return ResponseEntity.ok(holdings);
+  }
