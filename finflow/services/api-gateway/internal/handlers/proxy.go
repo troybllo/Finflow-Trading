@@ -20,7 +20,7 @@ func NewProxyHandler() *ProxyHandler {
 }
 
 // AddService registers a backend service
-func (p *ProxyHandler) AddService(name, backendURL string) error {
+func (p *ProxyHandler) AddService(name string, backendURL string) error {
 	target, err := url.Parse(backendURL)
 	if err != nil {
 		return fmt.Errorf("invalid backend URL: %w", err)

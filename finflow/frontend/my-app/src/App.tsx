@@ -1,69 +1,11 @@
-import "./App.css";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
-import Sidebar from "./components/layout/Sidebar";
-import Header from "./components/layout/Header";
-import Dashboard from "./pages/Dashboard";
-import TradingInstruments from "./pages/TradingInstruments";
-import Leaderboard from "./pages/Leaderboard";
-import EconomicCalendar from "./pages/EconomicCalendar";
+import Layout from "./components/layout/Layout";
 
-function App() {
-  return (
-    <BrowserRouter>
-      <div className="h-screen w-screen overflow-hidden bg-gradient-to-br from-black via-emerald-950 to-black flex">
-        <Sidebar />
-
-        <div className="flex-1 flex flex-col overflow-hidden">
-          <Header />
-
-          <main className="flex-1 overflow-hidden">
-            <Routes>
-              <Route path="/" element={<Dashboard />} />
-              <Route
-                path="/account"
-                element={<PlaceholderPage title="Account Overview" />}
-              />
-              <Route
-                path="/orders"
-                element={<PlaceholderPage title="Order List" />}
-              />
-              <Route
-                path="/trading"
-                element={<PlaceholderPage title="Trading" />}
-              />
-              <Route
-                path="/settings"
-                element={<PlaceholderPage title="User Settings" />}
-              />
-              <Route path="/leaderboard" element={<Leaderboard />} />
-              <Route
-                path="/extras"
-                element={<PlaceholderPage title="Account Extras" />}
-              />
-              <Route
-                path="/news"
-                element={<PlaceholderPage title="News Feed" />}
-              />
-              <Route path="/calendar" element={<EconomicCalendar />} />
-              <Route path="/instruments" element={<TradingInstruments />} />
-              <Route
-                path="/help"
-                element={<PlaceholderPage title="Help Center" />}
-              />
-              <Route
-                path="/website"
-                element={<PlaceholderPage title="Back to Website" />}
-              />
-            </Routes>
-          </main>
-        </div>
-      </div>
-    </BrowserRouter>
-  );
+export default function App() {
+  return <Layout />;
 }
 
 // Placeholder for pages not yet implemented
-function PlaceholderPage({ title }: { title: string }) {
+export function PlaceholderPage({ title }: { title: string }) {
   return (
     <div className="p-6 h-full flex items-center justify-center">
       <div className="bg-white/5 backdrop-blur-md rounded-2xl border border-white/10 p-12 text-center">
@@ -86,5 +28,3 @@ function PlaceholderPage({ title }: { title: string }) {
     </div>
   );
 }
-
-export default App;

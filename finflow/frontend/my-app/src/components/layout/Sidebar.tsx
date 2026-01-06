@@ -9,7 +9,7 @@ export default function Sidebar() {
     },
     {
       name: "Account Overview",
-      path: "/account",
+      path: "/portfolio",
       icon: "M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z",
     },
     {
@@ -20,7 +20,7 @@ export default function Sidebar() {
     {
       name: "Trading",
       path: "/trading",
-      icon: "M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"
+      icon: "M13 7h8m0 0v8m0-8l-8 8-4-4-6 6",
     },
     {
       name: "User Setting",
