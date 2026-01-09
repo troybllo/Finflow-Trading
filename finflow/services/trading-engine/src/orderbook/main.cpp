@@ -27,7 +27,6 @@ void clearScreen() {
   system("clear");
 #endif
 }
-
 // Print separator line
 void printLine(char c = '=', int width = 80) {
   std::cout << std::string(width, c) << "\n";
