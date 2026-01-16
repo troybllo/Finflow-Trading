@@ -85,11 +85,10 @@ async def check_redis_connection(request: Request) -> bool:
     """Check Redis connection."""
     try:
         async with asyncio.timeout(2.0):
-            if not hasattr(request.app.state, "redis"):
+            redis = getattr(request.app.state, "redis", None)
+            if redis is None:
                 return False
-            redis = request.app.state.redis
-            await redis.ping()
-            return True
+            return await redis.ping()
     except Exception as e:
         print(f"Redis connection check failed: {e}")
         return False

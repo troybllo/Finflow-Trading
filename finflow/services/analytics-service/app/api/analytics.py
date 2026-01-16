@@ -7,12 +7,15 @@ This module will grow to include:
 - AI chatbot for market queries
 """
 
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, Request
+from fastapi.responses import JSONResponse
 from pydantic import BaseModel, Field
 from datetime import datetime
 from typing import Optional
 
 router = APIRouter(prefix="/analytics")
+
+CACHE_TTL = 60
 
 
 # ============================================================
@@ -140,7 +143,7 @@ async def analyze_portfolio(request: PortfolioAnalysisRequest):
 
 
 @router.get("/symbols/{symbol}")
-async def get_symbol_analysis(symbol: str):
+async def get_symbol_analysis(request: Request, symbol: str):
     """
     Get detailed analysis for a specific symbol.
 
@@ -151,9 +154,22 @@ async def get_symbol_analysis(symbol: str):
     - AI-generated summary
     """
     symbol = symbol.upper()
+    cache_key = f"market:{symbol}"
+    redis = request.app.state.redis
 
-    # TODO: Implement actual analysis
-    return {
+    if redis:
+        try:
+            cached = await redis.get_json(cache_key)
+            if cached:
+                ttl = await redis.ttl(cache_key)
+                return JSONResponse(
+                    content=cached,
+                    headers={"X-Cache": "HIT", "X-Cache-TTL": str(max(ttl, 0))},
+                )
+        except Exception:
+            pass
+
+    data = {
         "symbol": symbol,
         "price": 0.0,
         "change": 0.0,
@@ -162,8 +178,36 @@ async def get_symbol_analysis(symbol: str):
         "sentiment": "neutral",
         "technical_rating": "hold",
         "summary": f"Analysis for {symbol} not yet implemented",
-        "last_updated": datetime.utcnow(),
+        "last_updated": datetime.utcnow().isoformat(),
     }
+
+    if redis:
+        try:
+            await redis.set_json(cache_key, data, ttl=CACHE_TTL)
+        except Exception:
+            pass
+
+    return JSONResponse(
+        content=data,
+        headers={"X-Cache": "MISS", "X-Cache-TTL": str(CACHE_TTL)},
+    )
+
+
+@router.delete("/cache/{symbol}")
+async def invalidate_cache(request: Request, symbol: str):
+    """Clear cached data for a symbol."""
+    symbol = symbol.upper()
+    cache_key = f"market:{symbol}"
+    redis = request.app.state.redis
+
+    if not redis:
+        raise HTTPException(status_code=503, detail="Cache unavailable")
+
+    try:
+        deleted = await redis.delete(cache_key)
+        return {"symbol": symbol, "cleared": deleted > 0}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
 
 
 @router.get("/trending")

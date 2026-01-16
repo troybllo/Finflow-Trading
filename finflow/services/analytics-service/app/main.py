@@ -6,25 +6,40 @@ FastAPI-based analytics and AI service for market insights.
 Day 1: FastAPI skeleton setup
 """
 
+import logging
+
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from contextlib import asynccontextmanager
 
 from app.api import health, analytics
+from app.infrastructure.cache.redis_client import get_redis_client
+
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     """Application lifespan events - startup and shutdown."""
-    # Startup: Initialize connections, load models, etc.
-    print(" Analytics Service starting up...")
-    # TODO: Initialize vector store connections
+    logger.info("Analytics Service starting up...")
+
     app.state.vector_store = None
-    # TODO: Load embedding models
     app.state.embedding_model = None
+
+    redis_client = get_redis_client()
+    try:
+        await redis_client.connect()
+        app.state.redis = redis_client
+    except Exception as e:
+        logger.warning(f"Redis unavailable, caching disabled: {e}")
+        app.state.redis = None
+
     yield
-    # Shutdown: Cleanup resources
-    print("👋 Analytics Service shutting down...")
+
+    if app.state.redis:
+        await app.state.redis.close()
+    logger.info("Analytics Service shutting down...")
 
 
 app = FastAPI(
