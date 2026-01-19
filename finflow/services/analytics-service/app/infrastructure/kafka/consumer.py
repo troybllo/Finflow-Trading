@@ -75,7 +75,6 @@ class KafkaConsumerService:
             group_id=self.group_id,
             auto_offset_reset="earliest",
             enable_auto_commit=False,  # Manual commit for reliability
-            value_deserializer=lambda m: json.loads(m.decode("utf-8")),
         )
 
     async def _consume_loop(self):
@@ -133,7 +132,15 @@ class KafkaConsumerService:
                 f"offset={msg.offset} key={msg.key}"
             )
 
-            event = PortfolioEvent.model_validate(msg.value)
+            # Deserialize JSON manually to handle bad messages
+            try:
+                data = json.loads(msg.value.decode("utf-8"))
+            except (json.JSONDecodeError, UnicodeDecodeError) as e:
+                logger.warning(f"Skipping malformed message at offset {msg.offset}: {e}")
+                await self._consumer.commit()
+                return
+
+            event = PortfolioEvent.model_validate(data)
             logger.info(
                 f"Portfolio event: user={event.user_id} symbol={event.symbol} "
                 f"action={event.action}"
