@@ -14,6 +14,7 @@ from contextlib import asynccontextmanager
 
 from app.api import health, analytics
 from app.infrastructure.cache.redis_client import get_redis_client
+from app.infrastructure.kafka import get_kafka_consumer
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -35,8 +36,18 @@ async def lifespan(app: FastAPI):
         logger.warning(f"Redis unavailable, caching disabled: {e}")
         app.state.redis = None
 
+    kafka_consumer = get_kafka_consumer()
+    try:
+        await kafka_consumer.start()
+        app.state.kafka_consumer = kafka_consumer
+    except Exception as e:
+        logger.warning(f"Kafka consumer failed to start: {e}")
+        app.state.kafka_consumer = None
+
     yield
 
+    if app.state.kafka_consumer:
+        await app.state.kafka_consumer.stop()
     if app.state.redis:
         await app.state.redis.close()
     logger.info("Analytics Service shutting down...")

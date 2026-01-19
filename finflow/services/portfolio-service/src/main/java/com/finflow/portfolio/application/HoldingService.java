@@ -16,6 +16,7 @@ import com.finflow.portfolio.dto.request.UpdateHoldingRequest;
 import com.finflow.portfolio.dto.response.HoldingResponse;
 import com.finflow.portfolio.dto.response.PaginatedResponse;
 import com.finflow.portfolio.exception.ResourceNotFoundException;
+import com.finflow.portfolio.infrastructure.kafka.PortfolioEventProducer;
 import com.finflow.portfolio.repository.HoldingRepository;
 import com.finflow.portfolio.repository.PortfolioRepository;
 
@@ -25,10 +26,15 @@ public class HoldingService {
 
     private final HoldingRepository holdingRepository;
     private final PortfolioRepository portfolioRepository;
+    private final PortfolioEventProducer eventProducer;
 
-    public HoldingService(HoldingRepository holdingRepository, PortfolioRepository portfolioRepository) {
+    public HoldingService(
+            HoldingRepository holdingRepository,
+            PortfolioRepository portfolioRepository,
+            PortfolioEventProducer eventProducer) {
         this.holdingRepository = holdingRepository;
         this.portfolioRepository = portfolioRepository;
+        this.eventProducer = eventProducer;
     }
 
     public HoldingResponse createHolding(String userId, CreateHoldingRequest request) {
@@ -51,6 +57,7 @@ public class HoldingService {
             portfolioRepository.save(portfolio);
 
             Holding updatedHolding = holdingRepository.save(existing);
+            eventProducer.sendPortfolioUpdated(userId, portfolio.getId(), request.symbol(), "HOLDING_ADDED");
             return HoldingResponse.from(updatedHolding);
         }
 
@@ -74,6 +81,7 @@ public class HoldingService {
         portfolio.addHolding(holding);
         portfolioRepository.save(portfolio);
 
+        eventProducer.sendPortfolioUpdated(userId, portfolio.getId(), holding.getSymbol(), "HOLDING_CREATED");
         return HoldingResponse.from(holding);
     }
 
